@@ -149,7 +149,7 @@ exports.editUser = async (req, res) => {
         if (!updateUser) {
             return res.status(404).json({ message: "User not found" });
         }
-        res.status(200).send({ success: true, message: "Deleted Successfully", data: updateUser });
+        res.status(200).send({ success: true, message: "Edit Successfully", data: updateUser });
     } catch (err) {
         res.status(500).json({ message: err.message });
         console.log(err)

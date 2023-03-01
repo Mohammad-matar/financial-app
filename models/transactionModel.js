@@ -17,8 +17,6 @@ const transactionSchema = new mongoose.Schema({
     amount: {
         type: String,
         unique: true,
-        trim: true,
-        lowercase: true,
         required: [true, "Please enter your amount"],
     },
     date: {
@@ -29,7 +27,6 @@ const transactionSchema = new mongoose.Schema({
     },
     currency: {
         type: String,
-        minLength: 8,
         trim: true,
         required: [true, "Please add the currency"],
     },
