@@ -14,6 +14,58 @@ exports.getAllCategories = async (req, res) => {
     }
 }
 
+// li betjib categories default ma3 l types li 7ateton l user bass elou
+exports.getDefaultCategoriesWithCustomizeByType = async (req, res) => {
+    try {
+        const { type } = req.query;
+        const categories = await Category.aggregate([
+            { $match: { $and: [{ $or: [{ isDefault: true }, { user_id: req.user._id }] }, { type: type }] } },
+        ]);
+        res.status(200).send({ message: "Get All Default Categories With Customize By Type Successfuly", data: categories });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+        console.log(err);
+    }
+}
+// li betjib categories default ma3 l types 
+exports.getDefaultCategoriesByType = async (req, res) => {
+    try {
+        const { type } = req.query;
+        const categories = await Category.aggregate([
+            { $match: { $and: [{ isDefault: true }, { type: type }] } },
+        ]);
+        res.status(200).send({ message: "Get All Default Categories By Type Successfuly", data: categories });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+        console.log(err);
+    }
+}
+// li betjib categories Admin and user
+exports.getDefaultCategoriesToTheAdminAndUser = async (req, res) => {
+    try {
+        const categories = await Category.aggregate([
+            { $match: { isDefault: true } },
+        ]);
+        res.status(200).send({ message: "Get All Default Categories To The Admin And User Successfuly", data: categories });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+        console.log(err);
+    }
+}
+// li betjib category by type    
+exports.getDefaultCategoriesByType = async (req, res) => {
+    try {
+        const { type } = req.query;
+        const categories = await Category.aggregate([
+            { $match: { type: type } },
+        ]);
+        res.status(200).send({ message: "Get All Categories By Type Successfuly", data: categories });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+        console.log(err);
+    }
+}
+
 //Get Category by id 
 exports.getCategoryById = async (req, res) => {
     try {
@@ -64,7 +116,7 @@ exports.addCategory = async (req, res) => {
     }
 };
 
-// Edit Transaction
+// Edit Category
 
 exports.editOneCategory = async (req, res) => {
     try {
@@ -86,7 +138,7 @@ exports.editOneCategory = async (req, res) => {
     }
 }
 
-//Delete One Transaction
+//Delete One Category
 
 exports.deleteCategory = async (req, res) => {
     try {
