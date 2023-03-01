@@ -26,7 +26,7 @@ exports.getTransactionById = async (req, res) => {
         res.status(200).json({
             success: true,
             data: transaction,
-            message: 'Successfully fetched transaction',
+            message: 'Successfully transaction',
         });
     } catch (error) {
         console.log(error);

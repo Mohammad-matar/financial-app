@@ -5,5 +5,6 @@ router.use("/user", require("./userRoutes")); // the main route for user and imp
 // here you'll be adding the routes for other collections like for product
 router.use("/transactions", require("./transactionRoutes"));
 // ...
+router.use("/categories", require("./categoryRoutes"));
 
 module.exports = router;
