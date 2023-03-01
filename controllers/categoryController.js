@@ -93,20 +93,18 @@ exports.addCategory = async (req, res) => {
             title,
             type,
             isDefault,
-            user_id,
         } = req.body;
 
         const addNewCategory = await Category.create({
             title,
             type,
             isDefault,
-            user_id,
+            user_id: req.user._id,
         });
 
         if (!addNewCategory) {
             return res.status(404).json({ message: "Category not found" });
         }
-
         res
             .status(200)
             .send({ success: true, message: "Add Successfully", data: addNewCategory });

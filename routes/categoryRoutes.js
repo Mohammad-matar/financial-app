@@ -9,7 +9,7 @@ router.get("/get-default-by-type", auth.protect, controller.getDefaultCategories
 router.get("/get-default-with-customized-by-type", auth.protect, controller.getDefaultCategoriesWithCustomizeByType);
 router.get("/:id", controller.getCategoryById);
 router.post("/", auth.protect, controller.addCategory);
-router.put("/:id", controller.editOneCategory);
-router.delete("/:id", controller.deleteCategory);
+router.put("/:id", auth.protect, controller.editOneCategory);
+router.delete("/:id", auth.protect, controller.deleteCategory);
 
 module.exports = router;
