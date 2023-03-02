@@ -15,6 +15,100 @@ exports.getTransactions = async (req, res) => {
     }
 }
 
+// li betjib Transactions related to the user id
+exports.getTransactionByUserId = async (req, res) => {
+    try {
+        const transaction = await Transaction.aggregate([
+            { $match: { user_id: req.user._id } }]);
+        res.status(200).send({ message: "Get All Transaction With  By User id Successfuly", data: transaction });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+        console.log(err);
+    }
+}
+
+
+// li betjib Transactions related to the user id
+exports.getTransactionByType = async (req, res) => {
+    try {
+        let { type } = req.query;
+        const transaction = await Transaction.aggregate([
+            {
+                $lookup: {
+                    from: "categories",
+                    localField: "category_id",
+                    foreignField: "_id",
+                    as: "category"
+                }
+            },
+            //to change the array of category to object
+            {
+                $unwind: "$category"
+            },
+            {
+                $match: {
+                    "category.type": type
+                }
+            }
+        ]);
+        res.status(200).send({ message: "Get All Transaction With  By type Successfuly", data: transaction });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+        console.log(err);
+    }
+}
+
+// li betjib Transactions by date
+exports.getTransactionByDate = async (req, res) => {
+    try {
+        let { date } = req.query;
+        const transaction = await Transaction.aggregate([
+            { $match: { date: date } }]);
+        res.status(200).send({ message: "Get All Transaction With  By date Successfuly", data: transaction });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+        console.log(err);
+    }
+}
+
+// li betjib Transactions years month weeks days
+exports.getTransactionByYearsMonthsWeeksDays = async (req, res) => {
+    try {
+        let { month } = req.query;
+        const transaction = await Transaction.aggregate([
+            {
+                $match: {
+                    $expr: {
+                        $eq: [{ $month: { $toDate: "$date" } }, parseInt(month)]
+                    }
+                }
+            }
+        ]);
+        res.status(200).send({ message: "Get All Transaction With  By date Successfuly", data: transaction });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+        console.log(err);
+    }
+}
+// get transaction by category
+exports.getTransactionByCategory = async (req, res) => {
+    try {
+        const transaction = await Transaction.aggregate([
+            {
+                $lookup: {
+                    from: "categories",
+                    localField: "category_id",
+                    foreignField: "_id",
+                    as: "category"
+                }
+            },
+        ]);
+        res.status(200).send({ message: "Get All Transaction With  Successfuly", data: transaction });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+        console.log(err);
+    }
+}
 //Get transaction by id 
 exports.getTransactionById = async (req, res) => {
     try {
@@ -44,7 +138,6 @@ exports.addTransaction = async (req, res) => {
             amount,
             date,
             currency,
-            user_id,
             category_id,
         } = req.body;
 
@@ -54,8 +147,9 @@ exports.addTransaction = async (req, res) => {
             amount,
             date,
             currency,
-            user_id,
             category_id,
+            //user jeye mn l token zetou te3 l user
+            user_id: req.user._id,
         });
 
         if (!addNewTransaction) {

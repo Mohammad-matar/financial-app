@@ -16,12 +16,10 @@ const transactionSchema = new mongoose.Schema({
     },
     amount: {
         type: String,
-        unique: true,
         required: [true, "Please enter your amount"],
     },
     date: {
         type: String,
-        minLength: 8,
         trim: true,
         required: [true, "Please enter the date"],
     },
