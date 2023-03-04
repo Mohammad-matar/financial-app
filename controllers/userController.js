@@ -85,6 +85,7 @@ exports.protect = async (req, res, next) => {
             return res.status(401)
                 .json({ message: "You're not Logged in" });
         }
+        console.log(token)
 
         // 2- Token verification
         let decoded;
@@ -113,7 +114,6 @@ exports.protect = async (req, res, next) => {
         if (currentUser.passwordChangedAfterTokenIssued(decoded.iat)) {
             return res.status(401).json({ message: "Your password has been changed, please login again !" })
         }
-
         // iza ata3nehon kellon weadd the user to all the request
         req.user = currentUser;
         next()

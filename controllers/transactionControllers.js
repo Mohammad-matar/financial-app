@@ -71,20 +71,53 @@ exports.getTransactionByDate = async (req, res) => {
     }
 }
 
-// li betjib Transactions years month weeks days
-exports.getTransactionByYearsMonthsWeeksDays = async (req, res) => {
+// li betjib Transactions month 
+exports.getTransactionByMonth = async (req, res) => {
     try {
-        let { month } = req.query;
+        let { date } = req.query;
+        const specifiedDate = new Date(date); // replace with the desired date
         const transaction = await Transaction.aggregate([
             {
                 $match: {
-                    $expr: {
-                        $eq: [{ $month: { $toDate: "$date" } }, parseInt(month)]
+                    $and: [
+                        {
+                            date: {
+                                $gte: new Date(specifiedDate.getFullYear(), specifiedDate.getMonth(), 1),
+                                $lt: new Date(specifiedDate.getFullYear(), specifiedDate.getMonth() + 1, 1)
+                            }
+                        },
+                        // {
+                        //     user_id: req.user._id
+                        // }
+                    ]
+                }
+            },
+
+        ])
+        res.status(200).send({ message: "Get All Transaction With  By Month Successfuly", data: transaction });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+        console.log(err);
+    }
+}
+
+// Get Transactions By Year
+
+exports.getTransactionByYear = async (req, res) => {
+    try {
+        let { date } = req.query;
+        const specifiedDate = new Date(date); // replace with the desired date
+        const transaction = await Transaction.aggregate([
+            {
+                $match: {
+                    date: {
+                        $gte: new Date(specifiedDate.getFullYear(), 0, 1),
+                        $lt: new Date(specifiedDate.getFullYear() + 1, 0, 1)
                     }
                 }
             }
-        ]);
-        res.status(200).send({ message: "Get All Transaction With  By date Successfuly", data: transaction });
+        ])
+        res.status(200).send({ message: "Get  Transaction With  By Year Successfuly", data: transaction });
     } catch (err) {
         res.status(500).json({ message: err.message });
         console.log(err);

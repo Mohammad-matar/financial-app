@@ -18,8 +18,10 @@ const transactionSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please enter your amount"],
     },
+
     date: {
-        type: String,
+        type: Date,
+        default: Date.now,
         trim: true,
         required: [true, "Please enter the date"],
     },
