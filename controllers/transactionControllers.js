@@ -86,9 +86,9 @@ exports.getTransactionByMonth = async (req, res) => {
                                 $lt: new Date(specifiedDate.getFullYear(), specifiedDate.getMonth() + 1, 1)
                             }
                         },
-                        // {
-                        //     user_id: req.user._id
-                        // }
+                        {
+                            user_id: req.user._id
+                        }
                     ]
                 }
             },
@@ -110,10 +110,17 @@ exports.getTransactionByYear = async (req, res) => {
         const transaction = await Transaction.aggregate([
             {
                 $match: {
-                    date: {
-                        $gte: new Date(specifiedDate.getFullYear(), 0, 1),
-                        $lt: new Date(specifiedDate.getFullYear() + 1, 0, 1)
-                    }
+                    $and: [
+                        {
+                            date: {
+                                $gte: new Date(specifiedDate.getFullYear(), 0, 1),
+                                $lt: new Date(specifiedDate.getFullYear() + 1, 0, 1)
+                            }
+                        },
+                        {
+                            user_id: req.user._id
+                        }
+                    ]
                 }
             }
         ])
