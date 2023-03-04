@@ -9,6 +9,8 @@ router.get("/get-transaction-by-date", auth.protect, controller.getTransactionBy
 router.get("/get-transaction-by-month", auth.protect, controller.getTransactionByMonth);
 router.get("/get-transaction-by-year", auth.protect, controller.getTransactionByYear);
 router.get("/get-transaction-by-category", auth.protect, controller.getTransactionByCategory);
+router.get("/get-transaction-with-total-of-type", auth.protect, controller.getTotalByType);
+router.get("/get-transaction-with-total-amount", auth.protect, controller.getTotalAmount);
 router.get("/:id", controller.getTransactionById);
 router.post("/", auth.protect, controller.addTransaction);
 router.put("/:id", auth.protect, controller.editTransication);

@@ -28,7 +28,7 @@ exports.getTransactionByUserId = async (req, res) => {
 }
 
 
-// li betjib Transactions related to the user id
+// li betjib Transactions By Type
 exports.getTransactionByType = async (req, res) => {
     try {
         let { type } = req.query;
@@ -149,6 +149,147 @@ exports.getTransactionByCategory = async (req, res) => {
         console.log(err);
     }
 }
+
+//Total of Income
+exports.getTotalByType = async (req, res) => {
+    try {
+        let { type } = req.query;
+        const transaction = await Transaction.aggregate(
+            [
+                {
+                    $match: {
+                        user_id: req.user._id
+                    },
+                },
+                {
+                    $lookup: {
+                        from: "categories",
+                        localField: "category_id",
+                        foreignField: "_id",
+                        as: "category",
+                    },
+                },
+                {
+                    $unwind: {
+                        path: "$category",
+                        includeArrayIndex: "string",
+                        preserveNullAndEmptyArrays: false,
+                    },
+                },
+                {
+                    $match: {
+                        "category.type": type,
+                    },
+                },
+                {
+                    $group: {
+                        _id: null,
+                        total: {
+                            $sum: "$amount",
+                        },
+                    },
+                },
+            ]
+        )
+
+        res.status(200).send({ message: `Get  Total of ${type} transaction Successfuly`, data: transaction });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+        console.log(err)
+    }
+}
+
+//Total of income and expense amount
+exports.getTotalAmount = async (req, res) => {
+    try {
+
+        var income = await Transaction.aggregate(
+            [
+                {
+                    $match: {
+                        user_id: req.user._id
+                    },
+                },
+                {
+                    $lookup: {
+                        from: "categories",
+                        localField: "category_id",
+                        foreignField: "_id",
+                        as: "category",
+                    },
+                },
+                {
+                    $unwind: {
+                        path: "$category",
+                        includeArrayIndex: "string",
+                        preserveNullAndEmptyArrays: false,
+                    },
+                },
+                {
+                    $match: {
+                        "category.type": "income",
+                    },
+                },
+                {
+                    $group: {
+                        _id: null,
+                        total: {
+                            $sum: "$amount",
+                        },
+                    },
+                },
+            ]
+        )
+        var expense = await Transaction.aggregate(
+            [
+                {
+                    $match: {
+                        user_id: req.user._id
+                    },
+                },
+                {
+                    $lookup: {
+                        from: "categories",
+                        localField: "category_id",
+                        foreignField: "_id",
+                        as: "category",
+                    },
+                },
+                {
+                    $unwind: {
+                        path: "$category",
+                        includeArrayIndex: "string",
+                        preserveNullAndEmptyArrays: false,
+                    },
+                },
+                {
+                    $match: {
+                        "category.type": "expense",
+                    },
+                },
+                {
+                    $group: {
+                        _id: null,
+                        total: {
+                            $sum: "$amount",
+                        },
+                    },
+                },
+            ]
+        )
+
+        income.length === 1 ? income = income[0].total : income = 0;
+        expense.length === 1 ? expense = expense[0].total : expense = 0;
+
+        const total = income - expense;
+
+        res.status(200).send({ message: `Get  Total Amount of transaction Successfuly`, data: { total } });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+        console.log(err)
+    }
+}
+
 //Get transaction by id 
 exports.getTransactionById = async (req, res) => {
     try {
